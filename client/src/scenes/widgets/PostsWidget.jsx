@@ -33,7 +33,7 @@ function PostsWidget({ userId, isProfile = false}) {
                 likes = {likes}
                 comments = {comments}
             />
-        ))}
+        )).reverse()}
     </>
   )
 }
