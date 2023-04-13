@@ -1,5 +1,5 @@
 import { Box, useMediaQuery } from "@mui/material"
-import { useState,useEffect } from "react"
+import { useGetUser } from "hooks/useGetUser"
 import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import Navbar from "scenes/navbar"
@@ -8,26 +8,11 @@ import MyPostWidget from "scenes/widgets/MyPostWidget"
 import PostsWidget from "scenes/widgets/PostsWidget"
 import UserWidget from "scenes/widgets/UserWidget"
 
-const base_url = process.env.REACT_APP_BASE_URL
-
 function ProfilePage() {
-  const [user,setUser] = useState(null)
   const { userId } = useParams()
   const token = useSelector((state) => state.token)
+  const { user } = useGetUser(token, userId)
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
-
-  const getUser = async () => {
-    const response = await fetch(`${base_url}/users/${userId}`,{
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}`}
-    })
-    const data = await response.json()
-    setUser(data)
-  }
-
-  useEffect(() => {
-    getUser()
-  },[])
 
   if(!user) return null
 
