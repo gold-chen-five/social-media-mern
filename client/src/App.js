@@ -14,9 +14,10 @@ function App() {
   const mode = useSelector((state) => state.mode)
   const theme = useMemo(() => createTheme(themeSettings(mode)),[mode])
   const token = useSelector((state) => state.token)
- // const isAuth = Boolean(useSelector((state) => state.token))
   const [isAuth, setIsAuth] = useState(Boolean(token))
+
   const handleIsAuth = async () => {
+    if(!token) return setIsAuth(false)
     try{
       const response = await fetch(`${base_url}/auth/checkLogin`,{
         method: 'GET',
@@ -27,14 +28,13 @@ function App() {
       else  throw new Error()
     }
     catch(err){
-      console.log('error')
       setIsAuth(false)
     }
   }
 
   useEffect(() => {
     handleIsAuth()
-  },[])
+  },[token])
 
   return (
     <div className="App">
@@ -43,8 +43,8 @@ function App() {
           <CssBaseline/>
           <Routes>
             <Route path="/" element={isAuth ? <Navigate to='/home'/> : <LoginPage/>}/>
-            <Route path="/home" element={isAuth ? <HomePage/> : <Navigate to='/'/>}/>
-            <Route path="/profile/:userId" element={isAuth ? <ProfilePage/> : <Navigate to='/'/>}/>
+            <Route path="/home" element={token && isAuth ? <HomePage/> : <Navigate to='/'/>}/>
+            <Route path="/profile/:userId" element={token && isAuth ? <ProfilePage/> : <Navigate to='/'/>}/>
           </Routes>
         </ThemeProvider>
       </HashRouter>
