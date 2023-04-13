@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
+import { useIsAuth } from "hooks/useIsAuth";
 
 const base_url = process.env.REACT_APP_BASE_URL
 
@@ -14,28 +15,8 @@ function App() {
   const mode = useSelector((state) => state.mode)
   const theme = useMemo(() => createTheme(themeSettings(mode)),[mode])
   const token = useSelector((state) => state.token)
-  const [isAuth, setIsAuth] = useState(Boolean(token))
-
-  const handleIsAuth = async () => {
-    if(!token) return setIsAuth(false)
-    try{
-      const response = await fetch(`${base_url}/auth/checkLogin`,{
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}`}
-      })
-      const {ok} = await response.json()
-      if(ok)  setIsAuth(true)
-      else  throw new Error()
-    }
-    catch(err){
-      setIsAuth(false)
-    }
-  }
-
-  useEffect(() => {
-    handleIsAuth()
-  },[token])
-
+  const {isAuth, isLoading, isError} = useIsAuth(token)
+  
   return (
     <div className="App">
       <HashRouter>

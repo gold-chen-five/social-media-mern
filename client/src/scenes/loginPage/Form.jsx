@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux'
 import { setLogin } from 'state'
 import Dropzone from 'react-dropzone'
 import FlexBetween from 'components/FlexBetween'
+import Loading from 'components/Loading';
 
 const base_url = process.env.REACT_APP_BASE_URL
 
@@ -56,8 +57,11 @@ function Form() {
     const isNonMobileScreens = useMediaQuery('(min-width:1000px)')
     const isLogin = pageType === 'login'
     const isRegister = pageType === 'register'
+    const [isLoading, setIsLoading] = useState(false)
 
     const register = async (values, onSubmitProps) => {
+        //set loading
+        setIsLoading(true)
 
         //form image data
         const formData = new FormData()
@@ -75,13 +79,18 @@ function Form() {
         )
         const savedUser = await savedUserResponse.json()
         onSubmitProps.resetForm()
-
+        
+        //setloading
+        setIsLoading(false)
+        
         if(savedUser){
             setPageType('login')
         }
     }
 
     const login = async (values, onSubmitProps) => {
+        setIsLoading(true)
+
         const loggedInResponse = await fetch(
             `${base_url}/auth/login`,
             {
@@ -94,6 +103,7 @@ function Form() {
         const loggedIn = await loggedInResponse.json()
         onSubmitProps.resetForm()
         if(loggedIn){
+            setIsLoading(false)
             dispatch(setLogin({
                 user: loggedIn.user,
                 token: loggedIn.token
@@ -270,6 +280,7 @@ function Form() {
                           : "Already have an account? login here." 
                         }
                     </Typography>
+                    <Loading loading={isLoading}/>
                 </form>
             )}
         </Formik>
