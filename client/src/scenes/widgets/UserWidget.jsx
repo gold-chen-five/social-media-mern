@@ -9,33 +9,19 @@ import UserImage from 'components/UserImage'
 import FlexBetween from 'components/FlexBetween'
 import WidgetWrapper from 'components/WidgetWrapper'
 import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const base_url = process.env.REACT_APP_BASE_URL
+import { useGetUser } from 'hooks/useGetUser'
 
 function UserWidget({userId, picturePath}) {
-    const [ user, setUser] = useState(null)
-    const { palette } = useTheme()
     const navigate = useNavigate()
     const token = useSelector((state) => state.token)
+
+    const { user } = useGetUser(token, userId)
+
+    const { palette } = useTheme()
     const dark = palette.neutral.dark
     const medium = palette.neutral.medium
     const main = palette.neutral.main
-
-    const getUser = async () => {
-        
-        const response = await fetch(`${base_url}/users/${userId}`,{
-            method: 'GET',
-            headers: { Authorization: `Bearer ${token}`}
-        })
-        const data = await response.json()
-        setUser(data)
-    }
-
-    useEffect(() => {
-        getUser()
-    },[])
 
     if(!user)  return null
 

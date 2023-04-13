@@ -1,30 +1,14 @@
 import { Box, Typography, useTheme  } from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setFriends } from "state";
-
-const base_url = process.env.REACT_APP_BASE_URL
+import { useSelector } from "react-redux";
+import { useGetFriends } from "hooks/useGetFriends";
 
 function FriendListWidget({userId}) {
-    const dispatch = useDispatch()
     const {palette} = useTheme()
     const token = useSelector((state) => state.token)
     const friends = useSelector((state) => state.user.friends)
-
-    const getFriends = async () => {
-        const response = await fetch(`${base_url}/${userId}/friends`,{
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}`}
-        })
-        const data = await response.json()
-        dispatch(setFriends({friends: data}))
-    }
-
-    useEffect(() => {
-        getFriends()
-    },[])
+    useGetFriends(token, userId)
 
     return (
         <WidgetWrapper>

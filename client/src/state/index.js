@@ -40,24 +40,19 @@ export const authSlice = createSlice({
             state.posts = updatedPosts
         },
         setPostLikes: (state,action) => {
-            const updatedPosts = state.posts.map((post) => {
+            state.posts.forEach((post,index) => {
                 if(post._id === action.payload.post._id){
-                    const {likes, ...clone} = post
-                    return {...clone, likes: action.payload.post.likes}
+                    state.posts[index].likes = action.payload.post.likes
                 }
-                return post
             })
-            state.posts = updatedPosts
+            
         },
         setComments: (state,action) => {
-            const updatedPosts = state.posts.map((post) => {
+            state.posts.forEach((post,index) => {
                 if(post._id === action.payload.post._id){
-                    const {comments, ...clone} = post
-                    return {...clone, comments: action.payload.post.comments}
+                    state.posts[index].comments = action.payload.post.comments
                 }
-                return post
             })
-            state.posts = updatedPosts
         }
     }
 })
