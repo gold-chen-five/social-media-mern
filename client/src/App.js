@@ -2,16 +2,39 @@ import { BrowserRouter, Navigate, Routes, Route,HashRouter  } from "react-router
 import HomePage from "scenes/homepage";
 import LoginPage from "scenes/loginPage";
 import ProfilePage from "scenes/profilePage";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 
+const base_url = process.env.REACT_APP_BASE_URL
+
 function App() {
   const mode = useSelector((state) => state.mode)
   const theme = useMemo(() => createTheme(themeSettings(mode)),[mode])
-  const isAuth = Boolean(useSelector((state) => state.token))
+  const token = useSelector((state) => state.token)
+ // const isAuth = Boolean(useSelector((state) => state.token))
+  const [isAuth, setIsAuth] = useState(Boolean(token))
+  const handleIsAuth = async () => {
+    try{
+      const response = await fetch(`${base_url}/auth/checkLogin`,{
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}`}
+      })
+      const {ok} = await response.json()
+      if(ok)  setIsAuth(true)
+      else  throw new Error()
+    }
+    catch(err){
+      console.log('error')
+      setIsAuth(false)
+    }
+  }
+
+  useEffect(() => {
+    handleIsAuth()
+  },[])
 
   return (
     <div className="App">
