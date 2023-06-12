@@ -26,7 +26,7 @@ function LoginPage() {
         backgroundColor={theme.palette.background.alt}
       >
         <Typography fontWeight='500' variant='h5' sx={{mb: '1.5rem'}}>
-          Welcome ro sociopedia, the Social Media for sociopaths
+          TEST ACCOUNT: rachel7465022@gmail.com, 123456
         </Typography>
         <Form/>
       </Box>
